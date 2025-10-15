@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker-compose down:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker run:*)",
+      "Bash(docker system prune:*)",
+      "Bash(chmod:*)",
+      "Bash(docker volume inspect:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
