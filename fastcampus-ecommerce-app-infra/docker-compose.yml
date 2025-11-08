@@ -3,7 +3,7 @@ services:
     image: postgres:latest
     restart: always
     volumes:
-      - ecommerce-db-data:/var/lib/postgresql/data
+      - ecommerce-db-data:/var/lib/postgresql
     ports:
       - "5433:5432"
     environment:
