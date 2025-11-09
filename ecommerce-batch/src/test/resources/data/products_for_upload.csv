@@ -1,0 +1,7 @@
+sellerId,category,productName,salesStartDate,salesEndDate,productStatus,brand,manufacturer,salesPrice,stockQuantity
+54,화장품,햇반,2022-10-16,2022-01-16,BMW,AVAILABLE,BMW코리아,484316,47
+77,음악,스마트폰,2021-05-16,2022-02-20,현대,OUT_OF_STOCK,롯데제과,11721,587
+39,가구,스킨케어 세트,2020-05-17,2020-09-17,스타벅스,OUT_OF_STOCK,LG젅자,202181,511
+80,서적,햇반,2023-01-15,2023-06-24,도미노,AVAILABLE,롯데제과,304689,442
+87,식품,축구장,2022-07-27,2022-11-22,LG,OUT_OF_STOCK,나이키코리아,477091,994
+32,가전,스킨케어 세트,2020-01-25,2021-06-11,스타벅스,OUT_OF_STOCK,아모레퍼시픽,134498,645

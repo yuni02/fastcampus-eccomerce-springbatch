@@ -12,7 +12,8 @@
       "Bash(./gradlew :ecommerce-batch:test:*)",
       "Bash(./gradlew clean:*)",
       "Bash(cat:*)",
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []
