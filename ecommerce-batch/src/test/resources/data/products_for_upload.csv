@@ -1,0 +1,7 @@
+sellerId,category,productName,salesStartDate,salesEndDate,productStatus,brand,manufacturer,salesPrice,stockQuantity
+20,서적,축구공,2022-01-22,2025-11-19,맥도날드,DISCONTINUED,도미노피자,43686,196
+17,가구,소설,2022-08-27,2026-04-24,BMW,AVAILABLE,맥도날드코리아,87049,404
+89,화장품,레고,2022-12-23,2024-08-11,롯데,DISCONTINUED,롯데제과,343613,999
+11,완구,스킨케어 세트,2021-04-28,2025-09-24,도미노,OUT_OF_STOCK,맥도날드코리아,209667,167
+24,화장품,축구공,2021-05-15,2025-01-06,맥도날드,DISCONTINUED,도미노피자,263199,818
+91,스포츠,TV,2023-11-06,2024-11-10,나이키,DISCONTINUED,스타벅스코리아,445575,85
