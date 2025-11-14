@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private final JdbcTemplate jdbcTemplate;
 
-    public Long countProducts() {
-        return jdbcTemplate.queryForObject("SELECT count(*) FROM products", Long.class);
-    }
+  private final JdbcTemplate jdbcTemplate;
+
+  public Long countProducts() {
+    return jdbcTemplate.queryForObject("select count(*) from products", Long.class);
+  }
 }

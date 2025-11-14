@@ -6,19 +6,19 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.stereotype.Component;
 
+// 공통으로 써도 됨.
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class BatchJobExecutionListener implements JobExecutionListener {
 
-    @Override
-    public void beforeJob(JobExecution jobExecution) {
-        log.info("Job execution started: {}", jobExecution.getJobInstance().getJobName());
-    }
+  @Override
+  public void beforeJob(JobExecution jobExecution) { // 잡 시작 전
+    log.info("listener: before Job");
+  }
 
-    @Override
-    public void afterJob(JobExecution jobExecution) {
-        log.info("Job execution completed: {}", jobExecution.getJobInstance().getJobName());
-    }
-
+  @Override
+  public void afterJob(JobExecution jobExecution) { // 잡 시작 후
+    log.info("listener: after Job");
+  }
 }

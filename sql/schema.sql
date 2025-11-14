@@ -17,3 +17,8 @@ create table products
 
 );
 
+create index idx_products_product_status on products (product_id);
+create index idx_products_category on products (category);
+create index idx_products_brand on products (brand);
+create index idx_products_manufacturer on products (manufacturer);
+create index idx_products_seller_id on products (seller_id);

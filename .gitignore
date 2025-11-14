@@ -37,3 +37,5 @@ out/
 .vscode/
 
 ./fastcampus-ecommerce-app-infra/data/
+
+./data/random_products.csv
