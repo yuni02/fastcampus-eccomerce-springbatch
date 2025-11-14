@@ -1,6 +1,70 @@
 package fastcampus.ecommerce.batch.jobconfig.product.upload;
 
+import fastcampus.ecommerce.batch.domain.product.Product;
+import fastcampus.ecommerce.batch.dto.ProductUploadCsvRow;
+import fastcampus.ecommerce.batch.util.ReflectionUtils;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecutionListener;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 @Configuration
-public class ProductUploadJobConfiguration {}
+public class ProductUploadJobConfiguration {
+
+  @Bean
+  public Job productUploadJob(
+      JobRepository jobRepository, Step productUploadStep, JobExecutionListener listener) {
+    return new JobBuilder("", jobRepository).listener(listener).start(productUploadStep).build();
+  }
+
+  // 잡을 통해서 로컬 상품 csv를 읽어오고 db에 상품 데이터를 넣을수 있음. leader, processor, writer, 변환하는거는 구현체에서 할거임.
+  @Bean
+  public Step productUploadStep(
+      JobRepository jobRepository,
+      DataSourceTransactionManager transactionManager,
+      StepExecutionListener stepExecutionListener,
+      ItemReader<ProductUploadCsvRow> productReader,
+      ItemProcessor<ProductUploadCsvRow, Product> productProcessor,
+      ItemWriter<Product> productWriter) {
+    return new StepBuilder("productUploadStep", jobRepository)
+        .<ProductUploadCsvRow, Product>chunk(1000, transactionManager)
+        .reader(productReader)
+        .processor(productProcessor)
+        .writer(productWriter)
+        .allowStartIfComplete(true)
+        .listener(stepExecutionListener)
+        .build();
+  }
+
+  @Bean
+  @StepScope
+  public FlatFileItemReader<ProductUploadCsvRow> productReader(
+      @Value("#{jobParameters['inputFilePath']}") String path) {
+    return new FlatFileItemReaderBuilder<ProductUploadCsvRow>()
+        .resource(new FileSystemResource(path))
+        .delimited()
+        .names(ReflectionUtils.getFieldNames(ProductUploadCsvRow.class).toArray(String[]::new))
+        .targetType(ProductUploadCsvRow.class)
+        .linesToSkip(1)
+        .build();
+  }
+
+  @Bean
+  public ItemProcessor<ProductUploadCsvRow, Product> productProcessor() {
+    return row -> Product.from(row);
+  }
+}

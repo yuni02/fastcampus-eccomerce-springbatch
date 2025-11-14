@@ -1,5 +1,6 @@
 package fastcampus.ecommerce.batch.domain.product;
 
+import fastcampus.ecommerce.batch.dto.ProductUploadCsvRow;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -28,4 +29,8 @@ public class Product {
 
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+
+  public static Product from(ProductUploadCsvRow row) {
+    return null;
+  }
 }
