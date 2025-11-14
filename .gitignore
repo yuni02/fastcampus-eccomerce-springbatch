@@ -43,4 +43,4 @@ data/random_product*.csv
 **/data/random_product*.csv
 
 # claude 설정파일
-./claude/
+.claude/
