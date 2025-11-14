@@ -22,7 +22,7 @@ public class Product {
   private String productName;
   private LocalDate salesStartDate;
   private LocalDate salesEndDate;
-  private ProductStatus productStatus;
+  private String productStatus;
   private String brand;
   private String manufacturer;
 
@@ -41,7 +41,7 @@ public class Product {
         row.getProductName(),
         DateTimeUtil.toLocalDate(row.getSalesStartDate()),
         DateTimeUtil.toLocalDate(row.getSalesEndDate()),
-        ProductStatus.valueOf(row.getProductStatus()),
+        row.getProductStatus(),
         row.getBrand(),
         row.getManufacturer(),
         row.getSalesPrice(),

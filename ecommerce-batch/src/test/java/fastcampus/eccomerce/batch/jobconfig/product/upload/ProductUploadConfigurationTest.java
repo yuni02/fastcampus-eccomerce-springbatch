@@ -28,7 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@TestPropertySource(properties = {"spring.batch.job.name=productUploadJob"})
+@TestPropertySource(properties = {
+    "spring.batch.job.enabled=false"
+})
 public class ProductUploadConfigurationTest extends BaseBatchIntegrationTest {
 
 
@@ -36,7 +38,7 @@ public class ProductUploadConfigurationTest extends BaseBatchIntegrationTest {
     @Autowired
     private ProductService productService;
 
-    @Value("classpath:/data/prooducts_for_upload.csv")
+    @Value("classpath:/data/products_for_upload.csv")
     private Resource input;
 
     @Test

@@ -1,3 +1,5 @@
+drop table if exists products;
+
 create table products
 (
     product_id       varchar(255) primary key,

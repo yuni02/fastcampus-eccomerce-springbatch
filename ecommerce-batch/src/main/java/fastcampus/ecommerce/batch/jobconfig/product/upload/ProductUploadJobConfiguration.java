@@ -61,6 +61,7 @@ public class ProductUploadJobConfiguration {
   public FlatFileItemReader<ProductUploadCsvRow> productReader(
       @Value("#{jobParameters['inputFilePath']}") String path) {
     return new FlatFileItemReaderBuilder<ProductUploadCsvRow>()
+        .name("productReader")
         .resource(new FileSystemResource(path))
         .delimited()
         .names(ReflectionUtils.getFieldNames(ProductUploadCsvRow.class).toArray(String[]::new))
@@ -78,9 +79,9 @@ public class ProductUploadJobConfiguration {
   public JdbcBatchItemWriter<Product> productWriter(DataSource dataSource) {
     String sql =
         "insert into products(product_id, seller_id, category, product_name, "
-            + "sales_start_date, sales_end_date, product_sales, brand, manufacturer, sales_price,"
+            + "sales_start_date, sales_end_date, product_status, brand, manufacturer, sales_price,"
             + "stock_quantity, created_at, updated_at) values(:productId, :sellerId, :category, :productName, "
-            + ":salesStartDate, :salesEndDate, :productSales, :brand, :manufacturer, :salesPrice, :stockQuantity, :createdAt, :updatedAt)";
+            + ":salesStartDate, :salesEndDate, :productStatus, :brand, :manufacturer, :salesPrice, :stockQuantity, :createdAt, :updatedAt)";
     return new JdbcBatchItemWriterBuilder<Product>()
         .dataSource(dataSource)
         .sql(sql)
