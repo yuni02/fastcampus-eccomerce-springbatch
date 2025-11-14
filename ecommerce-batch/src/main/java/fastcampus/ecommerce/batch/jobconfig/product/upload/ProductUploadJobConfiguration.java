@@ -31,7 +31,10 @@ public class ProductUploadJobConfiguration {
   @Bean
   public Job productUploadJob(
       JobRepository jobRepository, Step productUploadStep, JobExecutionListener listener) {
-    return new JobBuilder("", jobRepository).listener(listener).start(productUploadStep).build();
+    return new JobBuilder("productUploadJob", jobRepository)
+        .listener(listener)
+        .start(productUploadStep)
+        .build();
   }
 
   // 잡을 통해서 로컬 상품 csv를 읽어오고 db에 상품 데이터를 넣을수 있음. leader, processor, writer, 변환하는거는 구현체에서 할거임.
