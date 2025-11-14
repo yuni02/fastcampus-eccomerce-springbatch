@@ -41,3 +41,6 @@ fastcampus-ecommerce-app-infra/data/
 # Large CSV files
 data/random_product*.csv
 **/data/random_product*.csv
+
+# claude 설정파일
+settings.local.json
