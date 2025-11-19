@@ -84,7 +84,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "spring_batch_job_seconds_max{job_name=\"$job_name\"}",
+          "expr": "spring_batch_job_duration_seconds{job_name=\"$job_name\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -182,7 +182,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "spring_batch_step_seconds_max{job_name=\"$job_name\"}",
+          "expr": "spring_batch_step_duration_seconds{job_name=\"$job_name\"}",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -284,7 +284,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "spring_batch_item_read_seconds_max{job_name=\"$job_name\"}",
+          "expr": "spring_batch_step_executions_total{job_name=\"$job_name\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -394,7 +394,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "spring_batch_item_process_seconds_max{job_name=\"$job_name\"}",
+          "expr": "spring_batch_job_executions_total{job_name=\"$job_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{spring_batch_item_process_step_name}} ",
@@ -501,7 +501,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "spring_batch_chunk_write_seconds_max{job_name=\"$job_name\"}",
+          "expr": "spring_batch_job_failures_total{job_name=\"$job_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{spring_batch_chunk_write_step_name}} ",
@@ -598,7 +598,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "spring_batch_item_read_seconds_count{job_name=\"$job_name\"}",
+          "expr": "rate(spring_batch_step_executions_total{job_name=\"$job_name\"}[5m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -689,7 +689,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "spring_batch_item_process_seconds_count{job_name=\"$job_name\"}",
+          "expr": "rate(spring_batch_job_executions_total{job_name=\"$job_name\"}[5m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -780,7 +780,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "spring_batch_chunk_write_seconds_count{job_name=\"$job_name\"}",
+          "expr": "spring_batch_step_failures_total{job_name=\"$job_name\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
