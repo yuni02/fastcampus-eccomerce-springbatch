@@ -1,5 +1,6 @@
 package fastcampus.ecommerce.batch.service.monitoring;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
@@ -11,10 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class BatchStepExecutionListener implements StepExecutionListener {
+  private final CustomPrometheusPushGatewayManager manager;
 
   @Override
   public ExitStatus afterStep(StepExecution stepExecution) {
     log.info("listener: after step - exeution context: {}", stepExecution.getExecutionContext());
+    manager.pushMetrics(
+        Map.of("job_name", stepExecution.getJobExecution().getJobInstance().getJobName()));
+
     return ExitStatus.COMPLETED;
   }
 }

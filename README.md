@@ -5,3 +5,5 @@
 ## 프로젝트 개요
 
 Spring Batch를 활용한 E-Commerce 배치 처리 시스템입니다.
+
+## spring application 프로그램 Argument: --spring.boot.job.names=productUploadjob inputFilePath=data/random_product.csv
