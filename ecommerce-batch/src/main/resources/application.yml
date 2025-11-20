@@ -12,12 +12,13 @@ spring:
       initialize-schema: always
     metrics:
       enabled: true
-  logging:
-    level:
-      root: INFO
-      org.springframework.jdbc.core.JdbcTemplate: DEBUG
-      org.springframework.jdbc.core.StatementCreatorUtils: DEBUG
-      org.springframework.batch: DEBUG
+
+logging:
+  level:
+    root: INFO
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+    org.springframework.jdbc.core.StatementCreatorUtils: DEBUG
+    org.springframework.batch: DEBUG
 
 management:
   metrics:
