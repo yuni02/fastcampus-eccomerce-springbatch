@@ -2,6 +2,7 @@ package fastcampus.ecommerce.batch.jobconfig.product.upload;
 
 import fastcampus.ecommerce.batch.domain.product.Product;
 import fastcampus.ecommerce.batch.dto.ProductUploadCsvRow;
+import fastcampus.ecommerce.batch.service.file.SplitFilePartitioner;
 import fastcampus.ecommerce.batch.util.ReflectionUtils;
 import javax.sql.DataSource;
 import org.springframework.batch.core.Job;
@@ -19,6 +20,8 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.support.SynchronizedItemStreamReader;
+import org.springframework.batch.item.support.builder.SynchronizedItemStreamReaderBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +39,15 @@ public class ProductUploadJobConfiguration {
         .listener(listener)
         .start(productUploadStep)
         .build();
+  }
+
+  @Bean
+  public Step productUploadPartitionStep(
+      JobRepository jobRepository,
+      Step productUploadStep,
+      SplitFilePartitioner splitFilePartitioner) {
+    return new StepBuilder("productUploadPartitionStep", jobRepository)
+        .partitioner(productUploadStep.getName(), splitFilePartitioner);
   }
 
   // 잡을 통해서 로컬 상품 csv를 읽어오고 db에 상품 데이터를 넣을수 있음. leader, processor, writer, 변환하는거는 구현체에서 할거임.
@@ -61,16 +73,20 @@ public class ProductUploadJobConfiguration {
 
   @Bean
   @StepScope
-  public FlatFileItemReader<ProductUploadCsvRow> productReader(
+  public SynchronizedItemStreamReader<ProductUploadCsvRow> productReader(
       @Value("#{jobParameters['inputFilePath']}") String path) {
-    return new FlatFileItemReaderBuilder<ProductUploadCsvRow>()
-        .name("productReader")
-        .resource(new FileSystemResource(path))
-        .delimited()
-        .names(ReflectionUtils.getFieldNames(ProductUploadCsvRow.class).toArray(String[]::new))
-        .targetType(ProductUploadCsvRow.class)
-        .linesToSkip(1)
-        .build();
+    FlatFileItemReader<ProductUploadCsvRow> reader =
+        new FlatFileItemReaderBuilder<ProductUploadCsvRow>()
+            .name("productReader")
+            .resource(new FileSystemResource(path))
+            .delimited()
+            .names(ReflectionUtils.getFieldNames(ProductUploadCsvRow.class).toArray(String[]::new))
+            .targetType(ProductUploadCsvRow.class)
+            .linesToSkip(1)
+            .saveState(false) // 멀티스레드에서는 saveState를 false로
+            .build();
+
+    return new SynchronizedItemStreamReaderBuilder<ProductUploadCsvRow>().delegate(reader).build();
   }
 
   @Bean
