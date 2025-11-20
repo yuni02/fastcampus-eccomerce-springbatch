@@ -6,7 +6,7 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: [ 'localhost:9090' ]
-
+ㅁ
   - job_name: 'pushgateway'
     honor_labels: true
     static_configs:

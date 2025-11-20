@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 @Configuration
@@ -45,7 +46,8 @@ public class ProductUploadJobConfiguration {
       StepExecutionListener stepExecutionListener,
       ItemReader<ProductUploadCsvRow> productReader,
       ItemProcessor<ProductUploadCsvRow, Product> productProcessor,
-      ItemWriter<Product> productWriter) {
+      ItemWriter<Product> productWriter,
+      TaskExecutor taskExecutor) {
     return new StepBuilder("productUploadStep", jobRepository)
         .<ProductUploadCsvRow, Product>chunk(1000, transactionManager)
         .reader(productReader)
@@ -53,6 +55,7 @@ public class ProductUploadJobConfiguration {
         .writer(productWriter)
         .allowStartIfComplete(true)
         .listener(stepExecutionListener)
+        .taskExecutor(taskExecutor)
         .build();
   }
 
