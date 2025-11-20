@@ -17,6 +17,14 @@ public class SplitFilePartitioner implements Partitioner {
 
   @Override
   public Map<String, ExecutionContext> partition(int gridSize) {
-    return Map.of();
+    Map<String, ExecutionContext> result = new java.util.HashMap<>();
+
+    for (int i = 0; i < splitFiles.size(); i++) {
+      ExecutionContext context = new ExecutionContext();
+      context.put("file", splitFiles.get(i));
+      result.put("partition" + i, context);
+    }
+
+    return result;
   }
 }

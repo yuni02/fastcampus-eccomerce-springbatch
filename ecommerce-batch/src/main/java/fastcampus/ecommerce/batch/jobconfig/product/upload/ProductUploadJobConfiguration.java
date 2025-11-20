@@ -39,10 +39,10 @@ public class ProductUploadJobConfiguration {
 
   @Bean
   public Job productUploadJob(
-      JobRepository jobRepository, Step productUploadStep, JobExecutionListener listener) {
+      JobRepository jobRepository, Step productUploadPartitionStep, JobExecutionListener listener) {
     return new JobBuilder("productUploadJob", jobRepository)
         .listener(listener)
-        .start(productUploadStep)
+        .start(productUploadPartitionStep)
         .build();
   }
 
@@ -69,7 +69,7 @@ public class ProductUploadJobConfiguration {
 
   @Bean
   @JobScope
-  public TaskExecutorPartitionHandler filePartitionHandler(
+  public TaskExecutorPartitionHandler partitionHandler(
       TaskExecutor taskExecutor,
       Step productUploadStep,
       @Value("#{jobParameters['gridSize']}") int gridSize) {
