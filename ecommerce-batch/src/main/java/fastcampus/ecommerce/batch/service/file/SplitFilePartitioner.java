@@ -1,6 +1,22 @@
 package fastcampus.ecommerce.batch.service.file;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import org.springframework.batch.core.partition.support.Partitioner;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SplitFilePartitioner {}
+public class SplitFilePartitioner implements Partitioner {
+  private final List<File> splitFiles;
+
+  public SplitFilePartitioner(List<File> splitFiles) {
+    this.splitFiles = splitFiles;
+  }
+
+  @Override
+  public Map<String, ExecutionContext> partition(int gridSize) {
+    return Map.of();
+  }
+}

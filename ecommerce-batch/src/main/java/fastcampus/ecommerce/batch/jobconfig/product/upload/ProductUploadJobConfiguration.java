@@ -3,12 +3,15 @@ package fastcampus.ecommerce.batch.jobconfig.product.upload;
 import fastcampus.ecommerce.batch.domain.product.Product;
 import fastcampus.ecommerce.batch.dto.ProductUploadCsvRow;
 import fastcampus.ecommerce.batch.service.file.SplitFilePartitioner;
+import fastcampus.ecommerce.batch.util.FileUtils;
 import fastcampus.ecommerce.batch.util.ReflectionUtils;
+import java.io.File;
 import javax.sql.DataSource;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
@@ -47,7 +50,18 @@ public class ProductUploadJobConfiguration {
       Step productUploadStep,
       SplitFilePartitioner splitFilePartitioner) {
     return new StepBuilder("productUploadPartitionStep", jobRepository)
-        .partitioner(productUploadStep.getName(), splitFilePartitioner);
+        .partitioner(productUploadStep.getName(), splitFilePartitioner)
+        .partitionHandler(filePartitioner)
+        .allowStartIfComplete(true)
+        .build();
+  }
+
+  @Bean
+  @JobScope
+  public SplitFilePartitioner splitFilePartitioner(
+      @Value("#{jobParameters['inputFilePath']}") String path,
+      @Value("#{jobParameters['gridSize']}") int gridSize) {
+    return new SplitFilePartitioner(FileUtils.splitCsv(new File(path), gridSize));
   }
 
   // 잡을 통해서 로컬 상품 csv를 읽어오고 db에 상품 데이터를 넣을수 있음. leader, processor, writer, 변환하는거는 구현체에서 할거임.
