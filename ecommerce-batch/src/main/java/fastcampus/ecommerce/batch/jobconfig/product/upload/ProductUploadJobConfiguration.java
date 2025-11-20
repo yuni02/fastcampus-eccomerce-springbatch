@@ -14,6 +14,8 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.partition.PartitionHandler;
+import org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
@@ -48,10 +50,11 @@ public class ProductUploadJobConfiguration {
   public Step productUploadPartitionStep(
       JobRepository jobRepository,
       Step productUploadStep,
-      SplitFilePartitioner splitFilePartitioner) {
+      SplitFilePartitioner splitFilePartitioner,
+      PartitionHandler partitionHandler) {
     return new StepBuilder("productUploadPartitionStep", jobRepository)
         .partitioner(productUploadStep.getName(), splitFilePartitioner)
-        .partitionHandler(filePartitioner)
+        .partitionHandler(partitionHandler)
         .allowStartIfComplete(true)
         .build();
   }
@@ -62,6 +65,20 @@ public class ProductUploadJobConfiguration {
       @Value("#{jobParameters['inputFilePath']}") String path,
       @Value("#{jobParameters['gridSize']}") int gridSize) {
     return new SplitFilePartitioner(FileUtils.splitCsv(new File(path), gridSize));
+  }
+
+  @Bean
+  @JobScope
+  public TaskExecutorPartitionHandler filePartitionHandler(
+      TaskExecutor taskExecutor,
+      Step productUploadStep,
+      @Value("#{jobParameters['gridSize']}") int gridSize) {
+
+    TaskExecutorPartitionHandler handler = new TaskExecutorPartitionHandler();
+    handler.setTaskExecutor(taskExecutor);
+    handler.setStep(productUploadStep);
+    handler.setGridSize(gridSize);
+    return handler;
   }
 
   // 잡을 통해서 로컬 상품 csv를 읽어오고 db에 상품 데이터를 넣을수 있음. leader, processor, writer, 변환하는거는 구현체에서 할거임.
@@ -88,11 +105,11 @@ public class ProductUploadJobConfiguration {
   @Bean
   @StepScope
   public SynchronizedItemStreamReader<ProductUploadCsvRow> productReader(
-      @Value("#{jobParameters['inputFilePath']}") String path) {
+      @Value("#{stepExecutionContext['file']}") File file) {
     FlatFileItemReader<ProductUploadCsvRow> reader =
         new FlatFileItemReaderBuilder<ProductUploadCsvRow>()
             .name("productReader")
-            .resource(new FileSystemResource(path))
+            .resource(new FileSystemResource(file))
             .delimited()
             .names(ReflectionUtils.getFieldNames(ProductUploadCsvRow.class).toArray(String[]::new))
             .targetType(ProductUploadCsvRow.class)
