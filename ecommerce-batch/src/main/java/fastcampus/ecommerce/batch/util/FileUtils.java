@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,21 +15,22 @@ import java.util.stream.Stream;
 public class FileUtils {
 
   public static List<File> splitCsv(File csvFile, long fileCount) {
-    long lineCount;
-    List<File> files = new ArrayList<>();
-    try (Stream<String> stream = Files.lines(csvFile.toPath(), StandardCharsets.UTF_8)) {
-      lineCount = stream.count();
-      long linesPerFile = (long) Math.ceil((double) lineCount / fileCount);
+    return splitFileAfterLineCount(csvFile, fileCount, true, ".csv");
+  }
 
-      return splitFiles(csvFile);
+  public static List<File> splitFileAfterLineCount(
+      File inputFile, long fileCount, boolean ignoreFirstLine, String suffix) {
+    long lineCount;
+    try (Stream<String> stream = Files.lines(inputFile.toPath(), StandardCharsets.UTF_8)) {
+      lineCount = stream.count();
+      return splitFile(
+          inputFile, (long) Math.ceil((double) lineCount / fileCount), ignoreFirstLine, suffix);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-
-    return files;
   }
 
-  private static List<File> splitFiles(
+  private static List<File> splitFile(
       File csvFile, long linesPerFile, boolean ignoreFirstLine, String suffix) throws IOException {
     List<File> splitFiles = new ArrayList<>();
     try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
@@ -46,7 +48,12 @@ public class FileUtils {
         }
 
         if (shouldCreateFile) {
+
           splitFile = createTempFile("split_" + (fileIndex++) + "_", ".csv");
+          writer = new BufferedWriter(new FileWriter(splitFile));
+          splitFiles.add(splitFile);
+          lineCount = 0;
+          shouldCreateFile = false;
         }
         writer.write(line);
         writer.newLine();
@@ -57,6 +64,7 @@ public class FileUtils {
           shouldCreateFile = true;
         }
       }
+      writer.close();
     }
     return splitFiles;
   }
