@@ -69,7 +69,7 @@ public class FileUtils {
     return splitFiles;
   }
 
-  private static File createTempFile(String prefix, String suffix) throws IOException {
+  public static File createTempFile(String prefix, String suffix) throws IOException {
     File tempFile = File.createTempFile(prefix, suffix);
     tempFile.deleteOnExit();
     return tempFile;

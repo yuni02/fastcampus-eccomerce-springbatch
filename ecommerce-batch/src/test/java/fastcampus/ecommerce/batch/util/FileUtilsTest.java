@@ -15,12 +15,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 class FileUtilsTest {
 
-  @Value("classpath:/data/products_for_upload.csv")
-  private Resource csvResource;
+    @Value("classpath:/data/products_for_upload.csv")
+    private Resource csvResource;
 
-  @Test
-  void splitCsv() throws IOException {
-    List<File> files = FileUtils.splitCsv(csvResource.getFile(), 2);
-    assertThat(files).hasSize(2);
-  }
+    @Test
+    void splitCsv() throws IOException {
+        List<File> files = FileUtils.splitCsv(csvResource.getFile(), 2);
+        assertThat(files).hasSize(2);
+        files.stream().map(File::getName).forEach(System.out::println);
+    }
 }
