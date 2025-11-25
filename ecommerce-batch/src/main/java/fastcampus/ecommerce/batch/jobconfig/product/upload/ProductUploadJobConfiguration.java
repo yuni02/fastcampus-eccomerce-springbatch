@@ -113,7 +113,6 @@ public class ProductUploadJobConfiguration {
             .delimited()
             .names(ReflectionUtils.getFieldNames(ProductUploadCsvRow.class).toArray(String[]::new))
             .targetType(ProductUploadCsvRow.class)
-            .linesToSkip(1)
             .saveState(false) // 멀티스레드에서는 saveState를 false로
             .build();
 
